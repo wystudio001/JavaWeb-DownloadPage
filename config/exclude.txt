@@ -1,0 +1,5 @@
+.jsp
+.php
+wy/
+1.mp4
+1.pptx
