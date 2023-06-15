@@ -79,6 +79,13 @@ a {
                 response.sendRedirect("404.jsp");
                 return;
             }
+            
+            for(String str : directoriesToExclude){
+                if (folder.equals("/" + str)){
+                    response.sendRedirect("404.jsp");
+                    return;
+                }
+            }
         }
         
         File[] files = FileUtils.getFilesListByNmae(path + "files" + (folder != null ? folder : ""));
