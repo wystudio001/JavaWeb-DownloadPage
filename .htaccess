@@ -1,0 +1,10 @@
+# 请将伪静态规则或自定义Apache配置填写到此处
+
+
+location /config/ {
+   deny all;
+}
+
+location /src/ {
+   deny all;
+}
