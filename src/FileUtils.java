@@ -10,7 +10,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
 
+/*
+* auther: WYstudio
+* 2023-6-13 14:12 
+*
+* 次类为文件相关操作，包括 获取文件列表，获取文件拓展名，获取文件大小，获取文件修改时间
+*/
+
 public class FileUtils {
+    
+    /*
+    * @param: String path 要获取列表的路径
+    * @return: File[] 文件列表
+    *
+    * 获取根据文件名称正序排列的文件列表
+    */
     public static File[] getFilesListByNmae(String path) {
         File[] files = new File(path).listFiles();
         Arrays.sort(files, new Comparator<File>() {
@@ -30,7 +44,13 @@ public class FileUtils {
         });
         return files;
     }
-
+    
+    /*
+    * @param: String name 文件名
+    * @return: String 文件拓展名
+    *
+    * 根据文件名获取拓展名(不包含点)
+    */
     public static String getFileLastNmae(String name) {
         if (StringUtils.isEmpty(name)) {
             return "";
@@ -44,14 +64,25 @@ public class FileUtils {
         String ext = name.substring(dotIndex + 1);
         return ext.startsWith(".") ? ext.substring(1) : ext;
     }
-
+    
+    /*
+    * @param: String name 文件路径
+    * @return: String 文件修改时间 
+    *
+    * 根据文件路径获取最后修改时间 (格式：年-月-日 时:分:秒)
+    */
     public static String getFileEditTime(String path) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(new File(path).lastModified()));
     }
 
+    /*
+    * @param: String name 文件路径
+    * @return: String 文件大小
+    *
+    * 根据文件路径获取文件大小，并格式化为 B，KB，MB，GB
+    */
     public static final DecimalFormat DF = new DecimalFormat("#.00");
     public static final String[] UNIT = { "B", "KB", "MB", "GB" };
-
     public static String getFileSize(String path) {
         if (StringUtils.isEmpty(path)) {
             return "0B";
