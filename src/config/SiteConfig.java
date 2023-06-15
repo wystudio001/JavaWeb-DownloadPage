@@ -1,4 +1,4 @@
-package xyz.wystudio.jsp;
+package xyz.wystudio.jsp.config;
 
 import java.io.IOException;
 import java.io.FileReader;

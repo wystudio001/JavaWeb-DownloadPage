@@ -1,4 +1,4 @@
-package xyz.wystudio.jsp;
+package xyz.wystudio.jsp.util;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.io.File;
 */
 
 public class FileUtils {
-    
+
     /*
     * @param: String path 要获取列表的路径
     * @return: File[] 文件列表
@@ -44,7 +44,7 @@ public class FileUtils {
         });
         return files;
     }
-    
+
     /*
     * @param: String name 文件名
     * @return: String 文件拓展名
@@ -64,7 +64,7 @@ public class FileUtils {
         String ext = name.substring(dotIndex + 1);
         return ext.startsWith(".") ? ext.substring(1) : ext;
     }
-    
+
     /*
     * @param: String name 文件路径
     * @return: String 文件修改时间 
@@ -83,6 +83,7 @@ public class FileUtils {
     */
     public static final DecimalFormat DF = new DecimalFormat("#.00");
     public static final String[] UNIT = { "B", "KB", "MB", "GB" };
+
     public static String getFileSize(String path) {
         if (StringUtils.isEmpty(path)) {
             return "0B";

@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.io.*,java.util.*,java.util.regex.*,java.text.*,org.apache.commons.lang3.*,xyz.wystudio.jsp.*" %>
+<%@ page import="java.io.*,java.util.*,java.util.regex.*,java.text.*,org.apache.commons.lang3.*" %>
+<%@ page import="xyz.wystudio.jsp.config.*" %>
+<%@ page import="xyz.wystudio.jsp.bean.*" %>
+<%@ page import="xyz.wystudio.jsp.util.*" %>
 <%!
     public String[] extensionsToExclude = new String[0];
     public String[] directoriesToExclude = new String[0];
@@ -11,6 +14,8 @@
     // 创建一个站点配置实例，并加载站点配置信息
     SiteConfig siteConfig = new SiteConfig();
     siteConfig.load(path);
+    
+    FileList fileList = new FileList();
     
     directoriesToExclude = siteConfig.getExcludeByDirector();
     extensionsToExclude = siteConfig.getExcludeByExtension();
@@ -88,58 +93,29 @@ a {
             }
         }
         
-        File[] files = FileUtils.getFilesListByNmae(path + "files" + (folder != null ? folder : ""));
-        if (files != null) {
-            out.print("<p>当前路径：/<a href=\"./\">根目录</a>" + (folder != null ? folder : "") + "</p>\n");
+        out.print("<p>当前路径：/<a href=\"./\">根目录</a>" + (folder != null ? folder : "") + "</p>\n");
         
-            for (File file : files) {
-                boolean shouldShow = true;
-        
+        fileList.load(path + "files" + (folder != null ? folder : ""),directoriesToExclude,extensionsToExclude,filesToExclude);
+        FileBean[] filrBeans = fileList.getFileBeans();
+        if (filrBeans.length != 0) {
+            for (FileBean file : filrBeans) {
                 String name = file.getName();
-                String last = FileUtils.getFileLastNmae(name);
-                String time = FileUtils.getFileEditTime(path + "files" + (folder != null ? folder : "") + "/" + name);
-        
-                if (file.isDirectory()) {
-                    for (String dir : directoriesToExclude) {
-                        if (name.equals(dir)) {
-                            shouldShow = false;
-                            break;
-                        }
-                    }
-                    
-                    if (shouldShow) {
-                        String pathDir = (folder == null ? "" : folder) + "/" + name;
-                        out.println("<tr>");
-                        out.println("<td class=\"link\"><a href=\"./?folder=" + pathDir + "\"><i class=\"mdui-icon material-icons\">&#xe2c7;</i>  " + name + "/</a></td>");
-                        out.println("<td class=\"size\">-</td>");
-                        out.println("<td class=\"date\">" + time + "</td>");
-                        out.println("</tr>");
-                    }
+                String time = file.getTime();
+                String size = file.getSize();
+                if (file.isFolder()) {
+                    String pathDir = (folder == null ? "" : folder) + "/" + name;
+                    out.println("<tr>");
+                    out.println("<td class=\"link\"><a href=\"./?folder=" + pathDir + "\"><i class=\"mdui-icon material-icons\">&#xe2c7;</i>  " + name + "/</a></td>");
+                    out.println("<td class=\"size\">-</td>");
+                    out.println("<td class=\"date\">" + time + "</td>");
+                    out.println("</tr>");
                 } else {
-                    String size = FileUtils.getFileSize(path + "files" + (folder != null ? folder : "") + "/" + name);
-        
-                    for (String ext : extensionsToExclude) {
-                        if (last.equals(ext)) {
-                            shouldShow = false;
-                            break;
-                        }
-                    }
-        
-                    for (String fn : filesToExclude) {
-                        if (name.equals(fn)) {
-                            shouldShow = false;
-                            break;
-                        }
-                    }
-                    
-                    if (shouldShow) {
-                        String pathFile = "files" + (folder != null ? folder : "") + "/" + name;
-                        out.println("<tr>");
-                        out.println("<td class=\"link\"><a href=\"" + pathFile + "\"><i class=\"mdui-icon material-icons\">&#xe24d;</i>" + name + "</a></td>");
-                        out.println("<td class=\"size\">" + size + "</td>");
-                        out.println("<td class=\"date\">" + time + "</td>");
-                        out.println("</tr>");
-                    }
+                    String pathFile = "files" + (folder != null ? folder : "") + "/" + name;
+                    out.println("<tr>");
+                    out.println("<td class=\"link\"><a href=\"" + pathFile + "\"><i class=\"mdui-icon material-icons\">&#xe24d;</i>" + name + "</a></td>");
+                    out.println("<td class=\"size\">" + size + "</td>");
+                    out.println("<td class=\"date\">" + time + "</td>");
+                    out.println("</tr>");
                 }
             }
         }
