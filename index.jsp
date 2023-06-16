@@ -8,9 +8,15 @@
     public String[] extensionsToExclude = new String[0];
     public String[] directoriesToExclude = new String[0];
     public String[] filesToExclude = new String[0];
+    public String folder;
+    public String sort;
+    public boolean isasc = true;
+    public String asc;
 %>
 <%
     String path = application.getRealPath(request.getRequestURI());
+    String repath = request.getRequestURI();
+    
     // 创建一个站点配置实例，并加载站点配置信息
     SiteConfig siteConfig = new SiteConfig();
     siteConfig.load(path);
@@ -20,6 +26,38 @@
     directoriesToExclude = siteConfig.getExcludeByDirector();
     extensionsToExclude = siteConfig.getExcludeByExtension();
     filesToExclude = siteConfig.getExcludeByFile();
+    
+    sort = request.getParameter("sort");
+    folder = request.getParameter("folder");
+    asc = request.getParameter("isasc");
+    
+    if(sort != null){
+        sort = new String(sort.getBytes("ISO-8859-1"), "UTF-8");
+    }else{
+        sort = "name";
+    }
+    
+    if(asc != null){
+        isasc = new String(asc.getBytes("ISO-8859-1"), "UTF-8").equals("1");
+    }
+    
+    if (folder != null) {
+        folder = new String(folder.getBytes("ISO-8859-1"), "UTF-8");
+        File folderFile = new File(path + "files" + folder);
+        if (!folderFile.exists()) {
+            response.sendRedirect("404.jsp");
+            return;
+        }
+        
+        for(String str : directoriesToExclude){
+            if (folder.equals("/" + str)){
+                response.sendRedirect("404.jsp");
+                return;
+            }
+        }
+    }else{
+        folder = "";
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -69,34 +107,45 @@ a {
    <table id="list" class="mdui-table mdui-color-transparent">
    <thead>
    <tr>
-   <th style="width:55%">文件名称</th>
-   <th style="width:20%">大小</th>
-   <th style="width:25%">日期</th>
+   <%
+   switch(sort){
+   case "name":
+        if(isasc){
+            out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
+        }else{
+            out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=1\">文件名称 ↓</a></th>");
+        }
+        out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
+        out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+        break;
+   case "size":
+        out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
+        if(isasc){
+            out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
+        }else{
+            out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=1\">大小 ↓</a></th>");
+        }
+        out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+        break;
+   case "time":
+        out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
+        out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
+        if(isasc){
+            out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+        }else{
+            out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=1\">日期 ↓</a></th>");
+        }     
+   }
+   
+   %>
    </tr>
    </thead> 
    <tbody>
    <%
-        String folder = request.getParameter("folder");
-        if (folder != null) {
-            folder = new String(folder.getBytes("ISO-8859-1"), "UTF-8");
-            File folderFile = new File(path + "files" + folder);
-            if (!folderFile.exists()) {
-                response.sendRedirect("404.jsp");
-                return;
-            }
-            
-            for(String str : directoriesToExclude){
-                if (folder.equals("/" + str)){
-                    response.sendRedirect("404.jsp");
-                    return;
-                }
-            }
-        }
-        
         out.print("<p>当前路径：/<a href=\"./\">根目录</a>" + (folder != null ? folder : "") + "</p>\n");
         
         fileList.load(path + "files" + (folder != null ? folder : ""),directoriesToExclude,extensionsToExclude,filesToExclude);
-        FileBean[] filrBeans = fileList.getFileBeans();
+        FileBean[] filrBeans = fileList.getFileBeans(sort,isasc);
         if (filrBeans.length != 0) {
             for (FileBean file : filrBeans) {
                 String name = file.getName();
