@@ -135,6 +135,7 @@ a {
         }else{
             out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=1\">日期 ↓</a></th>");
         }     
+        break;
    default:
         out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
         out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
