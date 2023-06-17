@@ -4,11 +4,12 @@ import xyz.wystudio.jsp.util.FileUtils;
 import xyz.wystudio.jsp.bean.FileBean;
 import java.util.List;
 import java.util.ArrayList;
+import xyz.wystudio.jsp.config.SiteConfig;
 import java.io.File;
 
 /*
 * auther: WYstudio
-* 2023-6-15 20:23
+* 2023-6-17 19:16
 *
 * 次类为文件列表实现，包括 
 */
@@ -19,11 +20,11 @@ public class FileList {
     private String[] directoriesToExclude = new String[0];
     private String[] filesToExclude = new String[0];
 
-    public void load(String path2, String[] exfolder, String[] exexten, String[] exfile) {
+    public void load(String path2,SiteConfig siteConfig) {
         this.path = path2;
-        directoriesToExclude = exfolder;
-        extensionsToExclude = exexten;
-        filesToExclude = exfile;
+        directoriesToExclude = siteConfig.getExcludeByDirector();
+        extensionsToExclude = siteConfig.getExcludeByExtension();
+        filesToExclude = siteConfig.getExcludeByFile();
     }
 
     public FileBean[] getFileBeans(String sort, boolean isasc) {

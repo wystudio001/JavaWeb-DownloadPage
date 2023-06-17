@@ -5,9 +5,6 @@
 <%@ page import="xyz.wystudio.jsp.bean.*" %>
 <%@ page import="xyz.wystudio.jsp.util.*" %>
 <%!
-    public String[] extensionsToExclude = new String[0];
-    public String[] directoriesToExclude = new String[0];
-    public String[] filesToExclude = new String[0];
     public String folder;
     public String sort;
     public boolean isasc = true;
@@ -31,10 +28,6 @@
     
     FileList fileList = new FileList();
     
-    directoriesToExclude = siteConfig.getExcludeByDirector();
-    extensionsToExclude = siteConfig.getExcludeByExtension();
-    filesToExclude = siteConfig.getExcludeByFile();
-    
     sort = request.getParameter("sort");
     folder = request.getParameter("folder");
     asc = request.getParameter("isasc");
@@ -57,7 +50,7 @@
             return;
         }
         
-        for(String str : directoriesToExclude){
+        for(String str : siteConfig.getExcludeByDirector()){
             if (folder.equals("/" + str)){
                 response.sendRedirect("404.jsp");
                 return;
@@ -164,7 +157,7 @@ a {
    <%
         out.print("<p>当前路径：/<a href=\"./\">根目录</a>" + (folder != null ? folder : "") + "</p>\n");
         
-        fileList.load(path + "files" + (folder != null ? folder : ""),directoriesToExclude,extensionsToExclude,filesToExclude);
+        fileList.load(path + "files" + (folder != null ? folder : ""),siteConfig);
         FileBean[] filrBeans = fileList.getFileBeans(sort,isasc);
         if (filrBeans.length != 0) {
             for (FileBean file : filrBeans) {
