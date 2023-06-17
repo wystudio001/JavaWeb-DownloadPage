@@ -12,6 +12,14 @@
     public String sort;
     public boolean isasc = true;
     public String asc;
+    
+    public String getTh(String width, String folder2, String sort, boolean isasc2, String name){
+        if(isasc2){
+            return "<th style=\"width:" + width + "%\"><a href=\"./?folder=" + folder2 + "&sort=" + sort + "&isasc=0\">" + name + "</a></th>";
+        }else{
+            return "<th style=\"width:" + width + "%\"><a href=\"./?folder=" + folder2 + "&sort=" + sort + "&isasc=1\">" + name + "</a></th>";
+        }
+    }
 %>
 <%
     String path = application.getRealPath(request.getRequestURI());
@@ -108,38 +116,44 @@ a {
    <thead>
    <tr>
    <%
+   String nameAscTh = getTh("55",folder,"name",true,"文件名称 ↑");
+   String nameDescTh = getTh("55",folder,"name",false,"文件名称 ↓");
+   String sizeAscTh = getTh("20",folder,"size",true,"大小 ↑");
+   String sizeDescTh = getTh("20",folder,"size",false,"大小 ↓");
+   String timeAscTh = getTh("25",folder,"time",true,"日期 ↑");
+   String timeDescTh = getTh("25",folder,"time",false,"日期 ↓");
    switch(sort){
    case "name":
         if(isasc){
-            out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
+            out.println(nameAscTh);
         }else{
-            out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=1\">文件名称 ↓</a></th>");
+            out.println(nameDescTh);
         }
-        out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
-        out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+        out.println(sizeAscTh);
+        out.println(timeAscTh);
         break;
    case "size":
-        out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
+        out.println(nameAscTh);
         if(isasc){
-            out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
+            out.println(sizeAscTh);
         }else{
-            out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=1\">大小 ↓</a></th>");
+            out.println(sizeDescTh);
         }
-        out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+        out.println(timeAscTh);
         break;
    case "time":
-        out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
-        out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
+        out.println(nameAscTh);
+        out.println(sizeAscTh);
         if(isasc){
-            out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");
+            out.println(timeAscTh);
         }else{
-            out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=1\">日期 ↓</a></th>");
+            out.println(timeDescTh);
         }     
         break;
    default:
-        out.println("<th style=\"width:55%\"><a href=\"./?folder=" + folder + "&sort=name&isasc=0\">文件名称 ↑</a></th>");
-        out.println("<th style=\"width:20%\"><a href=\"./?folder=" + folder + "&sort=size&isasc=0\">大小 ↑</a></th>");
-        out.println("<th style=\"width:25%\"><a href=\"./?folder=" + folder + "&sort=time&isasc=0\">日期 ↑</a></th>");       
+        out.println(nameAscTh);
+        out.println(sizeAscTh);
+        out.println(timeAscTh);       
         break;
    }
    
