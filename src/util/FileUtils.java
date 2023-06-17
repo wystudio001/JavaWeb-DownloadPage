@@ -21,27 +21,108 @@ public class FileUtils {
 
     /*
     * @param: String path 要获取列表的路径
+    * @param: boolean 是否为升序
     * @return: File[] 文件列表
     *
-    * 获取根据文件名称正序排列的文件列表
+    * 获取根据文件名称升序或降序排列的文件列表
     */
-    public static File[] getFilesListByNmae(String path) {
+    public static File[] getFilesListByNmae(String path, boolean isasc) {
         File[] files = new File(path).listFiles();
-        Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                if (o1 == null || o2 == null) {
-                    return -1;
+        if (isasc) {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    if (o1 == null || o2 == null) {
+                        return -1;
+                    }
+                    if (o1.isDirectory() && o2.isFile()) {
+                        return -1;
+                    }
+                    if (o1.isFile() && o2.isDirectory()) {
+                        return 1;
+                    }
+                    return o1.getName().compareTo(o2.getName());
                 }
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
+            });
+        } else {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    if (o1 == null || o2 == null) {
+                        return 0;
+                    }
+                    if (o1.isDirectory() && o2.isFile()) {
+                        return 1;
+                    }
+                    if (o1.isFile() && o2.isDirectory()) {
+                        return -1;
+                    }
+                    return o2.getName().compareTo(o1.getName());
                 }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
+            });
+        }
+        return files;
+    }
+
+    /*
+    * @param: String path 要获取列表的路径
+    * @param: boolean 是否为升序
+    * @return: File[] 文件列表
+    *
+    * 获取根据文件大小升序或降序排列的文件列表
+    */
+    public static File[] getFilesListBySize(String path, boolean isasc) {
+        File[] files = new File(path).listFiles();
+        if (isasc) {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    long value1 = (o1 != null) ? o1.length() : 0L;
+                    long value2 = (o2 != null) ? o2.length() : 0L;
+                    return Long.compare(value1, value2);
                 }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+            });
+        } else {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    long value1 = (o1 != null) ? o1.length() : 0L;
+                    long value2 = (o2 != null) ? o2.length() : 0L;
+                    return Long.compare(value2, value1);
+                }
+            });
+        }
+        return files;
+    }
+
+    /*
+    * @param: String path 要获取列表的路径
+    * @param: boolean 是否为升序
+    * @return: File[] 文件列表
+    *
+    * 获取根据文件修改时间升序或降序排列的文件列表
+    */
+    public static File[] getFilesListByTime(String path, boolean isasc) {
+        File[] files = new File(path).listFiles();
+        if (isasc) {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    long value1 = (o1 != null) ? o1.lastModified() : 0L;
+                    long value2 = (o2 != null) ? o2.lastModified() : 0L;
+                    return Long.compare(value1, value2);
+                }
+            });
+        } else {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    long value1 = (o1 != null) ? o1.lastModified() : 0L;
+                    long value2 = (o2 != null) ? o2.lastModified() : 0L;
+                    return Long.compare(value2, value1);
+                }
+            });
+        }
         return files;
     }
 

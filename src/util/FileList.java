@@ -13,20 +13,36 @@ import java.io.File;
 * 次类为文件列表实现，包括 
 */
 public class FileList {
-    private File[] files;
+    private File[] files = new File[0];;
+    private String path;
     private String[] extensionsToExclude = new String[0];
     private String[] directoriesToExclude = new String[0];
     private String[] filesToExclude = new String[0];
 
-    public void load(String path, String[] exfolder, String[] exexten, String[] exfile) {
-        this.files = FileUtils.getFilesListByNmae(path);
+    public void load(String path2, String[] exfolder, String[] exexten, String[] exfile) {
+        this.path = path2;
         directoriesToExclude = exfolder;
         extensionsToExclude = exexten;
         filesToExclude = exfile;
     }
 
-    public FileBean[] getFileBeans() {
+    public FileBean[] getFileBeans(String sort, boolean isasc) {
         List<FileBean> listFileBeans = new ArrayList<>();
+
+        switch (sort) {
+        case "name":
+            files = FileUtils.getFilesListByNmae(path, isasc);
+            break;
+        case "size":
+            files = FileUtils.getFilesListBySize(path, isasc);
+            break;
+        case "time":
+            files = FileUtils.getFilesListByTime(path, isasc);
+            break;
+        default:
+            files = FileUtils.getFilesListByNmae(path, isasc);
+            break;
+        }
 
         for (File file : files) {
             String size = "-";
@@ -42,7 +58,7 @@ public class FileList {
                 }
 
                 if (shouldShow) {
-                    listFileBeans.add(new FileBean(file.getPath(), file.getName(), size, time,file.isDirectory()));
+                    listFileBeans.add(new FileBean(file.getPath(), file.getName(), size, time, file.isDirectory()));
                 }
 
             } else {
@@ -64,7 +80,7 @@ public class FileList {
                 }
 
                 if (shouldShow) {
-                    listFileBeans.add(new FileBean(file.getPath(), file.getName(), size, time,file.isDirectory()));
+                    listFileBeans.add(new FileBean(file.getPath(), file.getName(), size, time, file.isDirectory()));
                 }
             }
         }
