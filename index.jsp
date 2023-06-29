@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.io.*,java.util.*,java.util.regex.*,java.text.*,org.apache.commons.lang3.*" %>
+<%@ page import="java.io.*,java.util.*,java.util.regex.*,java.text.*,org.apache.commons.lang3.*,java.net.URLDecoder" %>
 <%@ page import="xyz.wystudio.jsp.config.*" %>
 <%@ page import="xyz.wystudio.jsp.bean.*" %>
 <%@ page import="xyz.wystudio.jsp.util.*" %>
@@ -32,18 +32,16 @@
     folder = request.getParameter("folder");
     asc = request.getParameter("isasc");
     
-    if(sort != null){
-        sort = new String(sort.getBytes("ISO-8859-1"), "UTF-8");
-    }else{
+    if(sort == null){
         sort = "name";
     }
     
     if(asc != null){
-        isasc = new String(asc.getBytes("ISO-8859-1"), "UTF-8").equals("1");
+        isasc = asc.equals("1");
     }
     
     if (folder != null) {
-        folder = new String(folder.getBytes("ISO-8859-1"), "UTF-8");
+        folder = URLDecoder.decode(folder, "utf-8");
         File folderFile = new File(path + "files" + folder);
         if (!folderFile.exists()) {
             response.sendRedirect("404.jsp");
